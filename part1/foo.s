@@ -26,18 +26,18 @@ main:                               # Теперь метка main:, именн�
 	mov	rax, QWORD PTR fs:40        # / stack protection, игнорируем
 	mov	QWORD PTR -8[rbp], rax      # -
 	xor	eax, eax                    # Обнуляет eax
-	mov	DWORD PTR -16[rbp], 0       # Зануляет sum_m
-	mov	DWORD PTR -12[rbp], 0       # Зануляет sum_p
+	mov	DWORD PTR -16[rbp], 0       # sum_m = 0
+	mov	DWORD PTR -12[rbp], 0       # sum_p = 0
 	lea	rax, -24[rbp]               # переменная n
 	mov	rsi, rax                    # rsi = rax
 	lea	rax, .LC0[rip]              # наша строка "%d"
 	mov	rdi, rax                    # rdi = rax
 	mov	eax, 0                      # Обнуляет eax
 	call	__isoc99_scanf@PLT      # Вызывает функцию `scanf`
-	mov	DWORD PTR -20[rbp], 0       # счётчик цикла = 0
+	mov	DWORD PTR -20[rbp], 0       # счётчик цикла i = 0
 	jmp	.L2                         # переход к метке .L2: ниже по коду, там проверка условия цикла
 .L3:                                # Метка .LC3:
-	mov	eax, DWORD PTR -20[rbp]     # eax = rbp[-20]
+	mov	eax, DWORD PTR -20[rbp]     # eax = rbp[-20] = i
 	cdqe                            # Convert Doubleword to Qwadword — у нас был eax, стал нормальный rax, делает sign-extend
 	lea	rdx, 0[0+rax*4]             # rdx = rax * 4 — прикольные трюки с вычислением: вычисляет адрес (rax*4)[0], который равен rax*4
 	lea	rax, a[rip]                 # адрес начала массива a
@@ -47,7 +47,7 @@ main:                               # Теперь метка main:, именн�
 	mov	rdi, rax                    # rdi = rax
 	mov	eax, 0                      # Обнуляет eax
 	call	__isoc99_scanf@PLT      # Вызывает функцию `scanf`
-	add	DWORD PTR -20[rbp], 1       # rbp[-20] += 1
+	add	DWORD PTR -20[rbp], 1       # rbp[-20] += 1 == ++i
 .L2:                                # Метка .LC2:
 	mov	eax, DWORD PTR -24[rbp]     # загрузка n из стека в регистр eax
 	cmp	DWORD PTR -20[rbp], eax     # сравнить rbp[-20] и eax (это счетчик цикла и N)
@@ -67,7 +67,7 @@ main:                               # Теперь метка main:, именн�
 	lea	rdx, 0[0+rax*4]             # rdx = rax * 4 — прикольные трюки с вычислением: вычисляет адрес (rax*4)[0], который равен rax*4
 	lea	rax, a[rip]                 # rax = &rip[a]
 	mov	eax, DWORD PTR [rdx+rax]    # eax = *(rdx + rax)
-	add	DWORD PTR -16[rbp], eax     # rbp[-16] += eax
+	add	DWORD PTR -16[rbp], eax     # rbp[-16] += eax == sum_m += a[i]
 	jmp	.L6                         # переход в .L6
 .L5:                                # Метка .LC5:
 	mov	eax, DWORD PTR -20[rbp]     # eax = rbp[-20]
@@ -75,7 +75,7 @@ main:                               # Теперь метка main:, именн�
 	lea	rdx, 0[0+rax*4]             # rdx = rax * 4
 	lea	rax, a[rip]                 # rax = &rip[a]
 	mov	eax, DWORD PTR [rdx+rax]    # eax = *(rdx + rax)
-	add	DWORD PTR -12[rbp], eax     # rbp[-12] += eax
+	add	DWORD PTR -12[rbp], eax     # rbp[-12] += eax == sum_p += a[i]
 .L6:                                # Метка .LC6:
 	add	DWORD PTR -20[rbp], 1       # rbp[-20] += 1 (индексируем i)
 .L4:                                # Метка .LC4:
@@ -132,7 +132,7 @@ main:                               # Теперь метка main:, именн�
 	sub	rdx, QWORD PTR fs:40
 	je	.L15
 	call	__stack_chk_fail@PLT
-.L15:                               
+.L15:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
