@@ -46,6 +46,74 @@ fill_array:
 	pop	rbp
 	ret
 	.size	fill_array, .-fill_array
+	.globl	find_neg_sum
+	.type	find_neg_sum, @function
+find_neg_sum:
+	endbr64
+	push	rbp
+	mov	rbp, rsp
+	mov	DWORD PTR -20[rbp], edi
+	mov	DWORD PTR -4[rbp], 0
+	mov	DWORD PTR -8[rbp], 0
+	jmp	.L7
+.L9:
+	mov	eax, DWORD PTR -8[rbp]
+	cdqe
+	lea	rdx, 0[0+rax*4]
+	lea	rax, a[rip]
+	mov	eax, DWORD PTR [rdx+rax]
+	test	eax, eax
+	jns	.L8
+	mov	eax, DWORD PTR -8[rbp]
+	cdqe
+	lea	rdx, 0[0+rax*4]
+	lea	rax, a[rip]
+	mov	eax, DWORD PTR [rdx+rax]
+	add	DWORD PTR -4[rbp], eax
+.L8:
+	add	DWORD PTR -8[rbp], 1
+.L7:
+	mov	eax, DWORD PTR -8[rbp]
+	cmp	eax, DWORD PTR -20[rbp]
+	jl	.L9
+	mov	eax, DWORD PTR -4[rbp]
+	pop	rbp
+	ret
+	.size	find_neg_sum, .-find_neg_sum
+	.globl	find_pos_sum
+	.type	find_pos_sum, @function
+find_pos_sum:
+	endbr64
+	push	rbp
+	mov	rbp, rsp
+	mov	DWORD PTR -20[rbp], edi
+	mov	DWORD PTR -4[rbp], 0
+	mov	DWORD PTR -8[rbp], 0
+	jmp	.L12
+.L14:
+	mov	eax, DWORD PTR -8[rbp]
+	cdqe
+	lea	rdx, 0[0+rax*4]
+	lea	rax, a[rip]
+	mov	eax, DWORD PTR [rdx+rax]
+	test	eax, eax
+	jle	.L13
+	mov	eax, DWORD PTR -8[rbp]
+	cdqe
+	lea	rdx, 0[0+rax*4]
+	lea	rax, a[rip]
+	mov	eax, DWORD PTR [rdx+rax]
+	add	DWORD PTR -4[rbp], eax
+.L13:
+	add	DWORD PTR -8[rbp], 1
+.L12:
+	mov	eax, DWORD PTR -8[rbp]
+	cmp	eax, DWORD PTR -20[rbp]
+	jl	.L14
+	mov	eax, DWORD PTR -4[rbp]
+	pop	rbp
+	ret
+	.size	find_pos_sum, .-find_pos_sum
 	.section	.rodata
 .LC0:
 	.string	"%d"
@@ -59,8 +127,6 @@ main:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 16
-	mov	DWORD PTR -8[rbp], 0
-	mov	DWORD PTR -12[rbp], 0
 	lea	rax, -16[rbp]
 	mov	rsi, rax
 	lea	rax, .LC0[rip]
@@ -68,8 +134,8 @@ main:
 	mov	eax, 0
 	call	__isoc99_scanf@PLT
 	mov	DWORD PTR -4[rbp], 0
-	jmp	.L7
-.L8:
+	jmp	.L17
+.L18:
 	mov	eax, DWORD PTR -4[rbp]
 	cdqe
 	lea	rdx, 0[0+rax*4]
@@ -81,40 +147,18 @@ main:
 	mov	eax, 0
 	call	__isoc99_scanf@PLT
 	add	DWORD PTR -4[rbp], 1
-.L7:
+.L17:
 	mov	eax, DWORD PTR -16[rbp]
 	cmp	DWORD PTR -4[rbp], eax
-	jl	.L8
-	mov	DWORD PTR -4[rbp], 0
-	jmp	.L9
-.L12:
-	mov	eax, DWORD PTR -4[rbp]
-	cdqe
-	lea	rdx, 0[0+rax*4]
-	lea	rax, a[rip]
-	mov	eax, DWORD PTR [rdx+rax]
-	test	eax, eax
-	jns	.L10
-	mov	eax, DWORD PTR -4[rbp]
-	cdqe
-	lea	rdx, 0[0+rax*4]
-	lea	rax, a[rip]
-	mov	eax, DWORD PTR [rdx+rax]
-	add	DWORD PTR -8[rbp], eax
-	jmp	.L11
-.L10:
-	mov	eax, DWORD PTR -4[rbp]
-	cdqe
-	lea	rdx, 0[0+rax*4]
-	lea	rax, a[rip]
-	mov	eax, DWORD PTR [rdx+rax]
-	add	DWORD PTR -12[rbp], eax
-.L11:
-	add	DWORD PTR -4[rbp], 1
-.L9:
+	jl	.L18
 	mov	eax, DWORD PTR -16[rbp]
-	cmp	DWORD PTR -4[rbp], eax
-	jl	.L12
+	mov	edi, eax
+	call	find_neg_sum
+	mov	DWORD PTR -8[rbp], eax
+	mov	eax, DWORD PTR -16[rbp]
+	mov	edi, eax
+	call	find_pos_sum
+	mov	DWORD PTR -12[rbp], eax
 	mov	edx, DWORD PTR -16[rbp]
 	mov	ecx, DWORD PTR -12[rbp]
 	mov	eax, DWORD PTR -8[rbp]
@@ -122,8 +166,8 @@ main:
 	mov	edi, eax
 	call	fill_array
 	mov	DWORD PTR -4[rbp], 0
-	jmp	.L13
-.L14:
+	jmp	.L19
+.L20:
 	mov	eax, DWORD PTR -4[rbp]
 	cdqe
 	lea	rdx, 0[0+rax*4]
@@ -135,10 +179,10 @@ main:
 	mov	eax, 0
 	call	printf@PLT
 	add	DWORD PTR -4[rbp], 1
-.L13:
+.L19:
 	mov	eax, DWORD PTR -16[rbp]
 	cmp	DWORD PTR -4[rbp], eax
-	jl	.L14
+	jl	.L20
 	mov	eax, 0
 	leave
 	ret
