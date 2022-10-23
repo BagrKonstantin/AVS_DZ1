@@ -3,16 +3,6 @@
 static int a[65536];
 static int b[65536];
 
-void fill_array(int sum_m, int sum_p, int n) {
-    for (int i = 0; i < n; ++i) {
-        if (i % 2 == 0) {
-            b[i] = sum_p;
-        } else {
-            b[i] = sum_m;
-        }
-    }
-}
-
 int find_neg_sum(int n) {
     int sum = 0;
     for (int i = 0; i < n; ++i) {
@@ -44,7 +34,13 @@ int main() {
     }
     sum_m = find_neg_sum(n);
     sum_p = find_pos_sum(n);
-    fill_array(sum_m, sum_p, n);
+    for (i = 0; i < n; ++i) {
+        if (i % 2 == 0) {
+            b[i] = sum_p;
+        } else {
+            b[i] = sum_m;
+        }
+    }
     for (i = 0; i < n; ++i) {
         printf("%d ", b[i]);
     }
