@@ -1,4 +1,4 @@
-	.file	"foo.c"
+.file	"foo.c"
 	.intel_syntax noprefix
 	.text
 	.local	a
@@ -11,9 +11,9 @@ find_neg_sum:
 	endbr64
 	push	rbp
 	mov	rbp, rsp
-	mov	DWORD PTR -20[rbp], edi
-	mov	DWORD PTR -4[rbp], 0
-	mov	DWORD PTR -8[rbp], 0
+	mov	DWORD PTR -20[rbp], edi         # n
+	mov	DWORD PTR -4[rbp], 0            # sum = 0
+	mov	DWORD PTR -8[rbp], 0            # i = 0
 	jmp	.L2
 .L4:
 	mov	eax, DWORD PTR -8[rbp]
@@ -32,10 +32,10 @@ find_neg_sum:
 .L3:
 	add	DWORD PTR -8[rbp], 1
 .L2:
-	mov	eax, DWORD PTR -8[rbp]
-	cmp	eax, DWORD PTR -20[rbp]
+	mov	eax, DWORD PTR -8[rbp]                  # i
+	cmp	eax, DWORD PTR -20[rbp]                 # сравнение i и n
 	jl	.L4
-	mov	eax, DWORD PTR -4[rbp]
+	mov	eax, DWORD PTR -4[rbp]                  # return sum
 	pop	rbp
 	ret
 	.size	find_neg_sum, .-find_neg_sum
@@ -45,9 +45,9 @@ find_pos_sum:
 	endbr64
 	push	rbp
 	mov	rbp, rsp
-	mov	DWORD PTR -20[rbp], edi
-	mov	DWORD PTR -4[rbp], 0
-	mov	DWORD PTR -8[rbp], 0
+	mov	DWORD PTR -20[rbp], edi                 # n
+	mov	DWORD PTR -4[rbp], 0                    # sum = 0
+	mov	DWORD PTR -8[rbp], 0                    # i = 0
 	jmp	.L7
 .L9:
 	mov	eax, DWORD PTR -8[rbp]
@@ -66,10 +66,10 @@ find_pos_sum:
 .L8:
 	add	DWORD PTR -8[rbp], 1
 .L7:
-	mov	eax, DWORD PTR -8[rbp]
-	cmp	eax, DWORD PTR -20[rbp]
+	mov	eax, DWORD PTR -8[rbp]                  # i
+	cmp	eax, DWORD PTR -20[rbp]                 # сравнение i и n
 	jl	.L9
-	mov	eax, DWORD PTR -4[rbp]
+	mov	eax, DWORD PTR -4[rbp]                  # return sum
 	pop	rbp
 	ret
 	.size	find_pos_sum, .-find_pos_sum
